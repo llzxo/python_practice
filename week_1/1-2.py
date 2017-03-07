@@ -6,8 +6,9 @@ with open('C:\Users\llzxo\Desktop\Plan-for-combating-master\week1\\1_2\\1_2answe
     names = Soup.select('body > div > div > div.col-md-9 > div > div > div > div.caption > h4 > a')
     rate_nums = Soup.select('body > div > div > div.col-md-9 > div > div > div > div.ratings > p.pull-right')
     rates = Soup.select('body > div > div > div.col-md-9 > div > div > div > div.ratings > p:nth-of-type(2)')
-for i in rates:
-    print type(i)
+
+print (images)
+print (prices)
 
 for image,price,name,rate_num,rate in zip(images,prices,names,rate_nums,rates):
     data = {
