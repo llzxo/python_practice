@@ -7,6 +7,7 @@ client = pymongo.MongoClient('192.168.18.51',27017)
 llzxo = client['llzxo']
 wuhan = llzxo['wuhan']
 
+
 '''
 url = 'http://wh.xiaozhu.com/fangzi/2739731663.html'
 headers = {
