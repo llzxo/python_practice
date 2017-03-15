@@ -36,22 +36,26 @@ def get_images(url):
 	#return imges
 
 def download(_url,name):
-    if(_url==None):
-        pass
-    result = urllib2.urlopen(_url)
+	if (_url==None):
+		pass
+	try:
+		result = urllib2.urlopen(_url)
 
-    if(result.getcode()!=200):
-        pass
-    else:
-        data=result.read()
-        with open(name,"wb") as code:
-            code.write(data)
-            code.close
+		if(result.getcode()!=200):
+			pass
+		else:
+			data=result.read()
+        	with open(name,"wb") as code:
+				code.write(data)
+				code.close
+	except urllib2.URLError:
+		pass
+
 
 def get_pages(num):
 	links = []
 	for i in range(0,num,30):
-		url = 'https://image.baidu.com/search/acjson?tn=resultjson_com&ipn=rj&ct=201326592&is=&fp=result&queryWord=%E6%B3%95%E5%9B%BD%E6%A2%A7%E6%A1%90%E6%A0%91%E5%8F%B6&cl=2&lm=-1&ie=utf-8&oe=utf-8&adpicid=&st=&z=&ic=&word=%E6%B3%95%E5%9B%BD%E6%A2%A7%E6%A1%90%E6%A0%91%E5%8F%B6&s=&se=&tab=&width=&height=&face=&istype=&qc=&nc=&fr=&pn={}'.format(i)
+		url = 'https://image.baidu.com/search/acjson?tn=resultjson_com&ipn=rj&ct=201326592&is=&fp=result&queryWord=%E9%B9%85%E6%8E%8C%E6%A5%B8%E5%8F%B6&cl=2&lm=-1&ie=utf-8&oe=utf-8&adpicid=&st=-1&z=&ic=0&word=%E9%B9%85%E6%8E%8C%E6%A5%B8%E5%8F%B6&s=&se=&tab=&width=&height=&face=0&istype=2&qc=&nc=1&fr=&pn={}'.format(i)
 		links.append(url)
 	print links
 	return links
@@ -70,7 +74,7 @@ print link
 count = 0
 for address in link:
     if(address!=None):
-        pathName="E:\\leaf\\faguowutong\\"+str(count+1)+".jpg"
+        pathName="E:\\leaf\\ezhangqiu\\"+str(count+1)+".jpg"
         download(address,pathName)
         count = count + 1
         print "downloading:",count
