@@ -39,21 +39,21 @@ class MNISTConvNet(nn.Module):
         x = F.relu(self.fc2(x))
         return F.log_softmax(x)
 
-net = MNISTConvNet()
-print(net)
+net1 = MNISTConvNet()
+print(net1)
 if torch.cuda.is_available():
-    net = net.cuda()
+    net = net1.cuda()
 
-optimizer = optim.SGD(net.parameters(), lr=0.01, momentum=0.9)
+optimizer = optim.SGD(net1.parameters(), lr=0.01, momentum=0.9)
 
 def train(epoch):
-    net.train()
+    net1.train()
     for batch_idx, (data, target) in enumerate(train_loader):
         if torch.cuda.is_available():
             data, target = data.cuda(), target.cuda()
         data, target = Variable(data), Variable(target)
         optimizer.zero_grad()
-        output = net(data)
+        output = net1(data)
         loss = F.nll_loss(output, target)
         loss.backward()
         optimizer.step()
@@ -62,7 +62,7 @@ def train(epoch):
                 epoch, batch_idx * len(data), len(train_loader.dataset),
                        100. * batch_idx / len(train_loader), loss.data[0]))
 
-def test(epoch):
+def test(net, epoch):
     net.eval()
     test_loss = 0
     correct = 0
@@ -80,9 +80,19 @@ def test(epoch):
         test_loss, correct, len(test_loader.dataset),
         100. * correct / len(test_loader.dataset)))
 
-for epoch in range(1,100):
-    train(epoch)
-    test(epoch)
+# for epoch in range(1,100):
+#     train(epoch)
+#     test(epoch)
+#     torch.save(net, 'mnist.pkl')
+def re_load():
+    net2 = torch.load('mnist.pkl')
+    return net2
+
+net3 = re_load()
+print(net3)
+
+test(net1, 10)
+test(net3, 10)
 # inputs = Variable(torch.randn(1, 1, 28, 28))
 # out = net(inputs)
 # print(out.size())
