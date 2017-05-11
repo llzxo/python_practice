@@ -5,9 +5,10 @@ import torch.optim as optim
 from torchvision import datasets, transforms
 import torch.nn.functional as F
 from PIL import Image
-import numpy
+import numpy as np
+import matplotlib.image as mpimg
 
-classes = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0']
+classes = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']
 
 train_loader = torch.utils.data.DataLoader(
     datasets.MNIST('./mnist', train=True, download=True, transform=transforms.Compose([
@@ -74,7 +75,6 @@ def test(net, epoch):
         if torch.cuda.is_available():
             data, target = data.cuda(), target.cuda()
         data, target = Variable(data, volatile=True), Variable(target)
-        print(data.size())
         output = net(data)
         test_loss += F.nll_loss(output, target).data[0]
         pred = output.data.max(1)[1]
@@ -85,36 +85,52 @@ def test(net, epoch):
         test_loss, correct, len(test_loader.dataset),
         100. * correct / len(test_loader.dataset)))
 
-# for epoch in range(1,100):
+# for epoch in range(1,10):
 #     train(epoch)
-#     test(epoch)
-#     torch.save(net, 'mnist.pkl')
-def re_load():
-    net2 = torch.load('mnist.pkl')
-    return net2
-
-net3 = re_load()
+#     test(net1, epoch)
+    # torch.save(net1, 'mnist.pkl')
+# def re_load():
+#     net2 = torch.load('mnist.pkl')
+#     return net2
+#
+net3 = torch.load('mnist.pkl')
 if torch.cuda.is_available():
     net3 = net3.cuda()
-# print(net3)
+# print("net1", net1)
+print("net3", net3)
 
-# test(net1, 10)
-test(net3, 10)
+# test(net1, 1)
+test(net3, 1)
 
 imsize = 28
-loader = transforms.Compose([transforms.Scale(size=imsize), transforms.ToTensor(), ])
+transform = transforms.Compose([transforms.ToPILImage()])
+loader = transforms.Compose([transforms.Scale(imsize), transforms.ToTensor()])
+def rgb2gray(rgb):
+    return np.dot(rgb[...,:3], [0.299, 0.587, 0.114])
 
 def image_loader(image_name):
-    image = Image.open(image_name)
+    image = mpimg.imread(image_name)
+    image = rgb2gray(image)
+    image = torch.from_numpy(image)
+    image = image.float()
+    image = image.unsqueeze(0)
+    print(image)
+    image = transform(image)
     image = loader(image).float()
     image = Variable(image, requires_grad=True)
-    image = image[0]
     image = image.unsqueeze(0)
-    image = image.unsqueeze(0)#maybe wrong
+    print(image)
     return image.cuda()
-image = image_loader('123.jpg')
-print(image)
-predict = net3(image)
+
+    # image = loader(image).float()
+    # image = Variable(image, requires_grad=True)
+    # image = image[0]
+    # image = image.unsqueeze(0)
+    # image = image.unsqueeze(0)#maybe wrong
+    # return image.cuda()
+image = image_loader('444.jpg')
+# print(image)
+predict = net1(image)
 print(predict)
 _, idx = torch.max(predict, 1)
 print _
